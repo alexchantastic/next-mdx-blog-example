@@ -1,6 +1,10 @@
 import { categories, type Category } from "@/categories";
+import { Pagination } from "@/components/pagination";
 import { Posts } from "@/components/posts";
-import { getPostsByCategory } from "@/posts";
+import {
+  getPaginatedPostsByCategory,
+  postsPerPage,
+} from "@/posts";
 import { notFound } from "next/navigation";
 
 export default async function Category({
@@ -13,15 +17,23 @@ export default async function Category({
   // 404 if the category does not exist
   if (categories.indexOf(category) == -1) notFound();
 
-  const posts = await getPostsByCategory({ category });
-
-  // Sort posts from newest to oldest
-  posts.sort((a, b) => +new Date(b.publishDate) - +new Date(a.publishDate));
+  const { posts, total } = await getPaginatedPostsByCategory({
+    category,
+    page: 1,
+    limit: postsPerPage,
+  });
 
   return (
     <main>
       <h1>Category: {category}</h1>
       <Posts posts={posts} />
+
+      <Pagination
+        baseUrl={`/category/${category}/page`}
+        page={1}
+        perPage={postsPerPage}
+        total={total}
+      />
     </main>
   );
 }

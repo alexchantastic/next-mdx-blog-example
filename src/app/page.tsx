@@ -1,17 +1,17 @@
 import { categories } from "@/categories";
+import { Pagination } from "@/components/pagination";
 import { Posts } from "@/components/posts";
-import { getPosts } from "@/posts";
+import { getPaginatedPosts, getPosts, postsPerPage } from "@/posts";
 
 export default async function Home() {
-  const posts = await getPosts();
-
-  // Sort posts from newest to oldest
-  posts.sort((a, b) => +new Date(b.publishDate) - +new Date(a.publishDate));
+  const { posts, total } = await getPaginatedPosts({ page: 1, limit: postsPerPage });
 
   return (
     <main>
       <h1>Next.js MDX Blog</h1>
       <Posts posts={posts} />
+
+      <Pagination baseUrl="/page" page={1} perPage={postsPerPage} total={total} />
 
       <h2>Categories</h2>
       <ul>

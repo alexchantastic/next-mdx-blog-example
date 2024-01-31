@@ -8,6 +8,8 @@ export interface Post {
   categories: Category[];
 }
 
+export const postsPerPage = 3 as const;
+
 export async function getPosts(): Promise<Post[]> {
   const slugs = (
     await readdir("./src/app/(posts)", { withFileTypes: true })
@@ -20,10 +22,17 @@ export async function getPosts(): Promise<Post[]> {
     })
   );
 
+  // Sort posts from newest to oldest
+  posts.sort((a, b) => +new Date(b.publishDate) - +new Date(a.publishDate));
+
   return posts;
 }
 
-export async function getPostsByCategory({ category }: { category: Category }) {
+export async function getPostsByCategory({
+  category,
+}: {
+  category: Category;
+}): Promise<Post[]> {
   const allPosts = await getPosts();
 
   const posts = allPosts.filter(
@@ -31,4 +40,43 @@ export async function getPostsByCategory({ category }: { category: Category }) {
   );
 
   return posts;
+}
+
+export async function getPaginatedPosts({
+  page,
+  limit,
+}: {
+  page: number;
+  limit: number;
+}): Promise<{ posts: Post[]; total: number }> {
+  const allPosts = await getPosts();
+
+  const paginatedPosts = allPosts.slice((page - 1) * limit, page * limit);
+
+  return {
+    posts: paginatedPosts,
+    total: allPosts.length,
+  };
+}
+
+export async function getPaginatedPostsByCategory({
+  page,
+  limit,
+  category,
+}: {
+  page: number;
+  limit: number;
+  category: Category;
+}): Promise<{ posts: Post[]; total: number }> {
+  const allCategoryPosts = await getPostsByCategory({ category });
+
+  const paginatedCategoryPosts = allCategoryPosts.slice(
+    (page - 1) * limit,
+    page * limit
+  );
+
+  return {
+    posts: paginatedCategoryPosts,
+    total: allCategoryPosts.length,
+  };
 }
