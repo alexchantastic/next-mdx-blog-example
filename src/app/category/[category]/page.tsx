@@ -1,6 +1,5 @@
 import { categories, type Category } from "@/categories";
-import { type Post } from "@/posts";
-import { readdir } from "fs/promises";
+import { getPostsByCategory } from "@/posts";
 import { notFound } from "next/navigation";
 
 export default async function Category({
@@ -13,20 +12,7 @@ export default async function Category({
   // 404 if the category does not exist
   if (categories.indexOf(category) == -1) notFound();
 
-  const slugs = (
-    await readdir("./src/app/(posts)", { withFileTypes: true })
-  ).filter((dirent) => dirent.isDirectory());
-
-  const posts = await slugs.reduce<Promise<Post[]>>(async (acc, cur) => {
-    const { name } = cur;
-    const { metadata } = await import(`../../(posts)/${name}/page.mdx`);
-
-    if (metadata.categories.indexOf(category) !== -1) {
-      (await acc).push({ slug: name, ...metadata });
-    }
-
-    return acc;
-  }, Promise.resolve([]));
+  const posts = await getPostsByCategory({ category });
 
   // Sort posts from newest to oldest
   posts.sort((a, b) => +new Date(b.publishDate) - +new Date(a.publishDate));

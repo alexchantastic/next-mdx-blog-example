@@ -1,18 +1,8 @@
 import { categories } from "@/categories";
-import { type Post } from "@/posts";
-import { readdir } from "fs/promises";
+import { getPosts } from "@/posts";
 
 export default async function Home() {
-  const slugs = (
-    await readdir("./src/app/(posts)", { withFileTypes: true })
-  ).filter((dirent) => dirent.isDirectory());
-
-  const posts: Post[] = await Promise.all(
-    slugs.map(async ({ name }) => {
-      const { metadata } = await import(`./(posts)/${name}/page.mdx`);
-      return { slug: name, ...metadata };
-    })
-  );
+  const posts = await getPosts();
 
   // Sort posts from newest to oldest
   posts.sort((a, b) => +new Date(b.publishDate) - +new Date(a.publishDate));
