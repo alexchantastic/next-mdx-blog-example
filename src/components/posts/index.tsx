@@ -1,4 +1,5 @@
-import { Post } from "@/posts";
+import { type Post } from "@/posts";
+import Link from "next/link";
 
 export function Posts({ posts }: { posts: Post[] }) {
   return (
@@ -6,7 +7,7 @@ export function Posts({ posts }: { posts: Post[] }) {
       {posts.map(({ slug, title, publishDate, categories }) => (
         <li key={slug}>
           <h2>
-            <a href={slug}>{title}</a>
+            <Link href={`/${slug}`}>{title}</Link>
           </h2>
           <p>
             <strong>Published:</strong>{" "}

@@ -39,7 +39,7 @@ export default async function Category({
 }
 
 export function generateStaticParams() {
-  return categories.map((cat) => ({
-    category: cat,
+  return categories.map((category) => ({
+    category,
   }));
 }

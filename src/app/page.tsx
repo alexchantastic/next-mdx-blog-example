@@ -1,7 +1,7 @@
 import { categories } from "@/categories";
 import { Pagination } from "@/components/pagination";
 import { Posts } from "@/components/posts";
-import { getPaginatedPosts, getPosts, postsPerPage } from "@/posts";
+import { getPaginatedPosts, postsPerPage } from "@/posts";
 
 export default async function Home() {
   const { posts, total } = await getPaginatedPosts({ page: 1, limit: postsPerPage });

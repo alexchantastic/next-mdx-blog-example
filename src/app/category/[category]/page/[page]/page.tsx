@@ -52,7 +52,7 @@ export async function generateStaticParams() {
       const pages = Math.ceil(posts.length / postsPerPage);
 
       return [...Array(pages)].map((_, i) => ({
-        category: category,
+        category,
         page: `${i + 1}`,
       }));
     })
