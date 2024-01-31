@@ -1,4 +1,5 @@
 import { categories, type Category } from "@/categories";
+import { Posts } from "@/components/posts";
 import { getPostsByCategory } from "@/posts";
 import { notFound } from "next/navigation";
 
@@ -20,21 +21,7 @@ export default async function Category({
   return (
     <main>
       <h1>Category: {category}</h1>
-      <ol>
-        {posts.map(({ slug, title, publishDate, categories }) => (
-          <li key={slug}>
-            <h2>
-              <a href={slug}>{title}</a>
-            </h2>
-            <p>
-              <strong>Published:</strong>{" "}
-              {new Date(publishDate).toLocaleDateString()}{" "}
-              <strong>Categories:</strong>{" "}
-              {categories.map((cat, i) => `${i ? ", " : ""}${cat}`)}
-            </p>
-          </li>
-        ))}
-      </ol>
+      <Posts posts={posts} />
     </main>
   );
 }
